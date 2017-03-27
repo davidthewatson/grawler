@@ -24,22 +24,22 @@ import (
 func main() {
   // Define a set of target static asset html tags
   // In our case we will collect image, css and javascript files
-	targetTags := []string{"img", "link", "script"}
+  targetTags := []string{"img", "link", "script"}
 
   // Our url filter, we will only craw internal links
-	filterExpression := regexp.MustCompile("http://tomblomfield.com/.+")
+  filterExpression := regexp.MustCompile("http://tomblomfield.com/.+")
 
   // Build a new crawler
-	crawler := Grawler.NewCrawler("http://tomblomfield.com", assetTags, filterExpression)
+  crawler := Grawler.NewCrawler("http://tomblomfield.com", targetTags, filterExpression)
 
   // Launch
-	crawler.Start()
+  crawler.Start()
 
   // Make main thread wait all goroutines finish its work
-	crawler.Wg.Wait()
+  crawler.Wg.Wait()
 
   // Walk() method performs a dfs traverse from seed url and outputs a sitemap including assets to stdout
-	crawler.Walk()
+  crawler.Walk()
 }
 ```
 
