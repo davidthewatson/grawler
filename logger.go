@@ -1,6 +1,6 @@
 package Grawler
 
-// Wrapper of log functions
+// Wrapper of logger functions
 
 import (
 	"log"

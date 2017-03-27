@@ -6,13 +6,16 @@ import (
 	"strings"
 )
 
-// A webpage is composed by page link, referenced pages and its static assets
+// Data structure representing a webpage
+// It stores irs url, referencing webpages and
+// its static assets
 type Webpage struct {
 	url             string
 	referencedPages *[]Webpage
 	staticAssets    *[]string
 }
 
+// Given a url return a Webpage object
 func buildWebpageFromUrl(url string) *Webpage {
 	return &Webpage{
 		url,
@@ -31,12 +34,12 @@ func (page *Webpage) String() string {
 }
 
 // Perform a dfs walk
-func (page *Webpage) Walk(indent string) {
+func (page *Webpage) walk(indent string) {
 	fmt.Printf("|%s%s\n", indent, page.url)
 	for index, asset := range *page.staticAssets {
 		fmt.Printf("|%sStatic Asset %d: %s\n", indent, index, asset)
 	}
 	for _, page := range *page.referencedPages {
-		page.Walk(strings.Repeat(indent, 2))
+		page.walk(strings.Repeat(indent, 2))
 	}
 }

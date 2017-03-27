@@ -1,5 +1,5 @@
 # Grawler
-Grawler is a simple recursive and concurrent web crawler written in Golang. It recursively crawls starting from a given seed url and all 'child' urls matching user defined filter expression. While crawling urls, it internally builds a sitemap and collect user defined static assets.
+Grawler is a simple recursive and concurrent web crawler written in Golang. It recursively crawls starting from a given seed url and all 'child' urls matching user defined filter expression. While crawling urls, it internally builds a sitemap and collects user defined static assets.
 
 ## Installation and requirements
 Grawler is tested under go1.8 and has a single dependency `golang.org/x/net/html`

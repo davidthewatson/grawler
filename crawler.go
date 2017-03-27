@@ -35,7 +35,6 @@ func NewCrawler(seedUrl string, tags []string, filterExpression *regexp.Regexp) 
 }
 
 func (c *Crawler) Start() {
-	c.Wg.Wait()
 	c.Wg.Add(1)
 	c.craw(c.seedPage)
 }
@@ -61,10 +60,10 @@ func (c *Crawler) craw(wp *Webpage) {
 	defer response.Body.Close()
 
 	logInfo(fmt.Sprintf("Parsing content of %v", wp.url))
-
 	c.parse(response, wp)
 
-	logInfo(fmt.Sprintf("Finished crawling %v. Found %d href and %d static assets", wp.url, len(*wp.referencedPages), len(*wp.staticAssets)))
+	logInfo(fmt.Sprintf("Finished crawling %v. Found %d href and %d static assets",
+		wp.url, len(*wp.referencedPages), len(*wp.staticAssets)))
 }
 
 func (c *Crawler) parse(response *http.Response, wp *Webpage) {
@@ -77,7 +76,7 @@ func (c *Crawler) parse(response *http.Response, wp *Webpage) {
 
 		case tokenType == html.StartTagToken:
 			token := tokenizer.Token()
-			// Find html tags
+			// Href starting tag
 			if token.Data == "a" {
 				c.collectAndCrawRefUrls(&token, wp)
 			} else if _, isObjectiveTag := c.objectiveAssetTags[token.Data]; isObjectiveTag {
@@ -87,6 +86,8 @@ func (c *Crawler) parse(response *http.Response, wp *Webpage) {
 	}
 }
 
+// Collect and craw href of current crawling webpage matching crawler
+// filter expression
 func (c *Crawler) collectAndCrawRefUrls(token *html.Token, wp *Webpage) {
 	for _, attr := range token.Attr {
 		// get href link
@@ -111,6 +112,7 @@ func (c *Crawler) collectAndCrawRefUrls(token *html.Token, wp *Webpage) {
 	}
 }
 
+// Collect current crawling webpage static assets
 func (c *Crawler) collectStaticAssets(token *html.Token, wp *Webpage) {
 	for _, attr := range token.Attr {
 		if attr.Key == "src" || attr.Key == "href" {
@@ -132,5 +134,5 @@ func (c *Crawler) isAllowedHref(URL string) bool {
 }
 
 func (c *Crawler) Walk() {
-	c.seedPage.Walk("-")
+	c.seedPage.walk("-")
 }
