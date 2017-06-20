@@ -100,7 +100,9 @@ func (c *Crawler) collectAndCrawRefUrls(token *html.Token, wp *Webpage) {
 			if c.isAllowedHref(URL) {
 				refPage := buildWebpageFromUrl(URL)
 				*wp.referencedPages = append(*wp.referencedPages, *refPage)
+				c.lock.Lock()
 				_, isVisited := c.visitedUrls[URL]
+				c.lock.Unlock()
 				if !isVisited {
 					c.lock.Lock()
 					c.visitedUrls[URL] = true
