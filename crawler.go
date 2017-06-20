@@ -16,7 +16,7 @@ type Crawler struct {
 	seedPage           *Webpage
 	Wg                 *sync.WaitGroup
 	visitedUrls        map[string]bool
-	objectiveAssetTags map[string]bool
+	//objectiveAssetTags map[string]bool
 }
 
 func NewCrawler(seedUrl string, tags []string, filterExpression *regexp.Regexp) *Crawler {
@@ -26,10 +26,10 @@ func NewCrawler(seedUrl string, tags []string, filterExpression *regexp.Regexp) 
 	crawler.seedPage = buildWebpageFromUrl(seedUrl)
 	crawler.Wg = new(sync.WaitGroup)
 	crawler.visitedUrls = make(map[string]bool)
-	crawler.objectiveAssetTags = map[string]bool{}
-	for _, tag := range tags {
-		crawler.objectiveAssetTags[tag] = true
-	}
+	//crawler.objectiveAssetTags = map[string]bool{}
+// 	for _, tag := range tags {
+// 		crawler.objectiveAssetTags[tag] = true
+// 	}
 
 	return crawler
 }
@@ -79,9 +79,10 @@ func (c *Crawler) parse(response *http.Response, wp *Webpage) {
 			// Href starting tag
 			if token.Data == "a" {
 				c.collectAndCrawRefUrls(&token, wp)
-			} else if _, isObjectiveTag := c.objectiveAssetTags[token.Data]; isObjectiveTag {
-				c.collectStaticAssets(&token, wp)
 			}
+// 			} else if _, isObjectiveTag := c.objectiveAssetTags[token.Data]; isObjectiveTag {
+// 				c.collectStaticAssets(&token, wp)
+// 			}
 		}
 	}
 }
