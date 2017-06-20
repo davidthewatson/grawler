@@ -42,11 +42,11 @@ func (c *Crawler) Start() {
 func (c *Crawler) fetch(URL string) (response *http.Response) {
 	response, err := http.Get(URL)
 	if err != nil {
-		logFatal(fmt.Sprintf("Error fetching %v, skipping", URL))
+		logInfo(fmt.Sprintf("Error %v fetching %v, skipping", err, URL))
 	}
 
 	if response.StatusCode != 200 {
-		logFatal(fmt.Sprintf("Error fetching %v, server returned status code %d", URL, response.StatusCode))
+		logInfo(fmt.Sprintf("Error fetching %v, server returned status code %d", URL, response.StatusCode))
 	}
 
 	return
