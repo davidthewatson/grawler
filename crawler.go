@@ -43,6 +43,7 @@ func (c *Crawler) fetch(URL string) (response *http.Response) {
 	response, err := http.Get(URL)
 	if err != nil {
 		logInfo(fmt.Sprintf("Error %v fetching %v, skipping", err, URL))
+		return
 	}
 
 	if response.StatusCode != 200 {
