@@ -40,7 +40,18 @@ func (c *Crawler) Start() {
 }
 
 func (c *Crawler) fetch(URL string) (response *http.Response) {
-	response, err := http.Get(URL)
+        t := &http.Transport{
+                Dial: (&net.Dialer{
+                        Timeout: 60 * time.Second,
+                        KeepAlive: 30 * time.Second,
+                }).Dial,
+                // We use ABSURDLY large keys, and should probably not.
+                TLSHandshakeTimeout: 60 * time.Second,
+        }
+        c := &http.Client{
+                Transport: t,
+        }
+        response, err := c.Get(URL)
 	if err != nil {
 		logInfo(fmt.Sprintf("Error %v fetching %v, skipping", err, URL))
 	}
