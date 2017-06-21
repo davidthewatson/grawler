@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"regexp"
 	"sync"
-
+	"time"
 	"golang.org/x/net/html"
 )
 
@@ -51,7 +51,8 @@ func (c *Crawler) fetch(URL string) (response *http.Response) {
         c := &http.Client{
                 Transport: t,
         }
-        response, err := c.Get(URL)
+	time.Sleep(100 * time.Millisecond)
+	response, err := c.Get(URL)
 	if err != nil {
 		logInfo(fmt.Sprintf("Error %v fetching %v, skipping", err, URL))
 	}
