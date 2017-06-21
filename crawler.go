@@ -51,7 +51,7 @@ func (c *Crawler) fetch(URL string) (response *http.Response) {
         c := &http.Client{
                 Transport: t,
         }
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(1000 * time.Millisecond)
 	response, err := c.Get(URL)
 	if err != nil {
 		logInfo(fmt.Sprintf("Error %v fetching %v, skipping", err, URL))
