@@ -16,7 +16,7 @@ type Crawler struct {
 	seedPage           *Webpage
 	Wg                 *sync.WaitGroup
 	visitedUrls        map[string]bool
-	//objectiveAssetTags map[string]bool
+	objectiveAssetTags map[string]bool
 }
 
 func NewCrawler(seedUrl string, tags []string, filterExpression *regexp.Regexp) *Crawler {
@@ -26,10 +26,10 @@ func NewCrawler(seedUrl string, tags []string, filterExpression *regexp.Regexp) 
 	crawler.seedPage = buildWebpageFromUrl(seedUrl)
 	crawler.Wg = new(sync.WaitGroup)
 	crawler.visitedUrls = make(map[string]bool)
-	//crawler.objectiveAssetTags = map[string]bool{}
-// 	for _, tag := range tags {
-// 		crawler.objectiveAssetTags[tag] = true
-// 	}
+	crawler.objectiveAssetTags = map[string]bool{}
+	for _, tag := range tags {
+		crawler.objectiveAssetTags[tag] = true
+	}
 
 	return crawler
 }
@@ -43,7 +43,6 @@ func (c *Crawler) fetch(URL string) (response *http.Response) {
 	response, err := http.Get(URL)
 	if err != nil {
 		logInfo(fmt.Sprintf("Error %v fetching %v, skipping", err, URL))
-		return
 	}
 
 	if response.StatusCode != 200 {
@@ -80,10 +79,9 @@ func (c *Crawler) parse(response *http.Response, wp *Webpage) {
 			// Href starting tag
 			if token.Data == "a" {
 				c.collectAndCrawRefUrls(&token, wp)
+			} else if _, isObjectiveTag := c.objectiveAssetTags[token.Data]; isObjectiveTag {
+				c.collectStaticAssets(&token, wp)
 			}
-// 			} else if _, isObjectiveTag := c.objectiveAssetTags[token.Data]; isObjectiveTag {
-// 				c.collectStaticAssets(&token, wp)
-// 			}
 		}
 	}
 }
@@ -101,9 +99,7 @@ func (c *Crawler) collectAndCrawRefUrls(token *html.Token, wp *Webpage) {
 			if c.isAllowedHref(URL) {
 				refPage := buildWebpageFromUrl(URL)
 				*wp.referencedPages = append(*wp.referencedPages, *refPage)
-				c.lock.Lock()
 				_, isVisited := c.visitedUrls[URL]
-				c.lock.Unlock()
 				if !isVisited {
 					c.lock.Lock()
 					c.visitedUrls[URL] = true
